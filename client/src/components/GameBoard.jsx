@@ -159,7 +159,7 @@ const GameBoardContent = ({ levelData, onComplete }) => {
         }
     }, [nodes, edges, hasWon, isPowerOn, levelData, testAttempts]);
 
-    // --- LOGICA DE STARE A AVATARULUI (SPARK) ---
+    // --- LOGICA DE STARE A AVATARULUI ) ---
     const isBulbOn = nodes.find(n => n.type === 'bulb')?.data?.value === true;
     let currentMood = 'neutral';
     let currentMsg = levelData.description;
@@ -183,7 +183,6 @@ const GameBoardContent = ({ levelData, onComplete }) => {
     return (
         <div style={{ width: '100%', height: '100%', display: 'flex' }}>
 
-            {/* AVATARUL MENTOR INTEGRAT AICI */}
             <Avatar mood={currentMood} title={`Misiunea: ${levelData.title}`} message={currentMsg} />
 
             {/* Modal de Victorie */}

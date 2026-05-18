@@ -77,17 +77,16 @@ function App() {
         });
     };
 
-    // Verificarea în timp real a mini-jocului din Prolog
+    // Verificarea partea aia de inceput
     useEffect(() => {
         if (progress.profile !== null) return;
 
         let isCorrect = false;
 
-        // Logica pentru Step 1: Poarta AND
         if (onboardStep === 1) {
             isCorrect = swA && swB;
         }
-        // Logica pentru Step 2: Poarta XOR
+
         else if (onboardStep === 2) {
             isCorrect = swA !== swB;
         }
@@ -99,10 +98,10 @@ function App() {
                 setSwA(false);
                 setSwB(false);
 
-                if (onboardStep === 1) setOnboardStep(2); // Trece la puzzle-ul 2
-                else if (onboardStep === 2) finishCalibration(9, 'Tehnician'); // Terminare glorioasă
+                if (onboardStep === 1) setOnboardStep(2);
+                else if (onboardStep === 2) finishCalibration(9, 'Tehnician');
 
-            }, 1500); // Așteaptă 1.5s să savureze jucătorul becul aprins
+            }, 1500);
         } else {
             setBulbGlow(false);
         }
@@ -121,7 +120,7 @@ function App() {
     if (totalXP >= 3000) { badgeTitle = "Master Arhitect"; badgeColor = "#facc15"; }
 
     // =========================================================
-    // PROLOG INTERACTIV (FĂRĂ CUVÂNTUL "TEST", DOAR JOACĂ)
+    // PROLOG INTERACTIV
     // =========================================================
     if (progress.profile === null) {
         return (
@@ -188,7 +187,7 @@ function App() {
 
                             </div>
 
-                            {/* Opțiunea de Ieșire Rapidă în caz că se blochează */}
+                            {/* Opțiunea de Ieșire */}
                             <button
                                 onClick={() => finishCalibration(onboardStep === 1 ? 1 : 5, 'Ucenic')}
                                 style={{ marginTop: '25px', padding: '10px 20px', background: 'transparent', border: 'none', color: '#94a3b8', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline' }}
@@ -203,7 +202,7 @@ function App() {
     }
 
     // =========================================================
-    // JOCUL PROPRIU-ZIS (HARTA ȘI NIVELELE RĂMÂN IDENTICE)
+    // JOCUL MARE
     // =========================================================
     return (
         <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#020617' }}>

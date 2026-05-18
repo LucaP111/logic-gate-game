@@ -1,4 +1,4 @@
-// audio.js - Generator de sunete 8-bit folosind Web Audio API
+// Partea audio: sunete pentru gresit / corect + altele daca e
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playTone(freq, type, duration, vol = 0.1) {
@@ -21,16 +21,13 @@ function playTone(freq, type, duration, vol = 0.1) {
 }
 
 export const playSound = {
-    // Sunet când pornești/oprești curentul (un click mecanic)
     switch: () => playTone(600, 'square', 0.1, 0.05),
 
-    // Sunet scurt și grav pentru când faci o greșeală (Scurtcircuit)
     error: () => {
         playTone(150, 'sawtooth', 0.3, 0.1);
         setTimeout(() => playTone(100, 'sawtooth', 0.4, 0.1), 100);
     },
 
-    // Arpegiu fericit pentru victorie (Level Up!)
     win: () => {
         playTone(400, 'sine', 0.1, 0.1);
         setTimeout(() => playTone(500, 'sine', 0.1, 0.1), 100);

@@ -17,7 +17,6 @@ const SwitchNode = ({ data }) => {
                 Sursa {data.label}
             </div>
 
-            {/* Eticheta care arată starea fixă a sursei */}
             <div style={{
                 width: '100%',
                 padding: '5px',

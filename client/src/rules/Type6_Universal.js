@@ -2,7 +2,6 @@ export default function validateType6(helpers) {
     if (!helpers.allSwitchesUsed) return { isWon: false, msg: "Fiecare sursă trebuie conectată!" };
     if (!helpers.noFloatingGates) return { isWon: false, msg: "Toate porțile de pe ecran trebuie folosite!" };
 
-    // Verificăm strict dacă jucătorul a trișat și a pus altă poartă
     const allowedGates = helpers.levelData.availableGates || [];
     const invalidGates = helpers.gateTypesUsed.filter(g => !allowedGates.includes(g));
 

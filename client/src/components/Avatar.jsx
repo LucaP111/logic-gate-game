@@ -1,7 +1,8 @@
 import React from 'react';
 
 const Avatar = ({ mood, title, message }) => {
-    // Definim expresiile faciale și culorile în funcție de emoția avatarului
+    // Aici definim expresiile faciale
+    // Nu ar fi rau sa inlocuim cu imagini proprii
     const getAvatarProps = () => {
         switch(mood) {
             case 'happy':
@@ -24,7 +25,6 @@ const Avatar = ({ mood, title, message }) => {
             animation: mood === 'alert' ? 'shake 0.4s' : 'none'
         }}>
 
-            {/* Fața Avatarului (Aici poți pune o imagine reală mai târziu: <img src={spark_happy.png} />) */}
             <div style={{
                 width: '70px', height: '70px', borderRadius: '50%', background: '#1e293b',
                 border: `3px solid ${color}`, display: 'flex', justifyContent: 'center', alignItems: 'center',
@@ -33,7 +33,7 @@ const Avatar = ({ mood, title, message }) => {
                 {face}
             </div>
 
-            {/* Bula de dialog (Speech Bubble) */}
+            {/* Bula de dialog - am putea adauga funcita de x pentru a inchide dupa citire*/}
             <div style={{
                 background: 'rgba(30, 41, 59, 0.95)', border: `2px solid ${color}`, borderRadius: '15px',
                 padding: '15px', position: 'relative', borderTopLeftRadius: 0,
@@ -44,7 +44,7 @@ const Avatar = ({ mood, title, message }) => {
                     Spark, Inginerul Șef
                 </h4>
 
-                {/* Titlul Misiunii / Contextul */}
+                {/* Titlul Misiunii */}
                 <h3 style={{ margin: '0 0 8px 0', color: '#f8fafc', fontSize: '16px' }}>{title}</h3>
 
                 {/* Textul Dinamic */}
@@ -53,7 +53,6 @@ const Avatar = ({ mood, title, message }) => {
                 </p>
             </div>
 
-            {/* Un mic efect de animație pentru avertizări */}
             <style>{`
         @keyframes shake {
           0% { transform: translateX(0); }
