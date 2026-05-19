@@ -25,3 +25,80 @@ body, html {
 .react-flow__edge.inactive-edge .react-flow__edge-path {
     stroke: #ef4444 !important;
 }
+
+.roles-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.roles-modal {
+    background: #1e293b;
+    border: 2px solid #38bdf8;
+    border-radius: 16px;
+    padding: 24px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+}
+
+.roles-modal h2 {
+    margin-top: 0;
+    color: #38bdf8;
+    text-align: center;
+}
+
+.role-card {
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: 0.3s ease;
+}
+
+.active-role {
+    border: 2px solid #10b981;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.roles-modal-close {
+    margin-top: 16px;
+    background: #ef4444;
+    border: none;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+.roles-modal-close:hover {
+    background: #dc2626;
+}
+
+.roles-info-button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
+    transition: 0.2s ease;
+}
+
+.roles-info-button:hover {
+    background: #1d4ed8;
+}

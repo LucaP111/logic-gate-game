@@ -10,6 +10,102 @@ const chunkArray = (arr, size) => {
     return chunked;
 };
 
+
+const RANK_DETAILS = [
+    {
+        title: 'Începător',
+        minXP: 0,
+        icon: '🛡️',
+        color: '#94a3b8',
+        mission: 'Primii pași în electronică digitală',
+        description: 'În acest rol, jucătorul învață conceptele de bază: ce este un semnal logic, cum funcționează valorile 0 și 1 și cum se conectează primele componente pe panoul de lucru.',
+        skills: ['Înțelegerea semnalelor ON/OFF', 'Folosirea comutatoarelor', 'Observarea ieșirii unui circuit simplu']
+    },
+    {
+        title: 'Ucenic',
+        minXP: 0,
+        icon: '🛡️',
+        color: '#94a3b8',
+        mission: 'Repararea circuitelor simple ale stației',
+        description: 'Ucenicul poate rezolva circuite introductive și începe să recunoască rolul porților AND, OR și NOT. Accentul este pus pe experimentare și pe construirea intuiției logice.',
+        skills: ['Porți AND/OR/NOT', 'Conectare corectă între noduri', 'Testarea circuitelor simple']
+    },
+    {
+        title: 'Tehnician',
+        minXP: 500,
+        icon: '🛡️',
+        color: '#3b82f6',
+        mission: 'Diagnosticarea modulelor intermediare',
+        description: 'Tehnicianul lucrează cu porți mai variate și începe să optimizeze soluțiile. Jucătorul trebuie să fie atent la numărul de încercări și la piesele folosite pentru a obține mai multe stele.',
+        skills: ['Porți XOR/NAND/NOR', 'Alegerea porții potrivite', 'Reducerea încercărilor inutile']
+    },
+    {
+        title: 'Inginer Logic',
+        minXP: 1500,
+        icon: '🛡️',
+        color: '#10b981',
+        mission: 'Proiectarea subsistemelor critice',
+        description: 'Inginerul Logic poate analiza cerințe mai complexe și poate construi circuite pornind de la un comportament dorit. Nivelurile cer planificare, verificare și gândire în pași.',
+        skills: ['Combinarea mai multor porți', 'Reverse engineering logic', 'Depanarea circuitelor greșite']
+    },
+    {
+        title: 'Master Arhitect',
+        minXP: 3000,
+        icon: '🛡️',
+        color: '#facc15',
+        mission: 'Arhitectura completă a sistemelor logice',
+        description: 'Master Arhitect este rangul avansat. Jucătorul rezolvă provocări de optimizare, multiplexoare, comparatoare și funcții logice complexe folosind cât mai puține componente.',
+        skills: ['Optimizare de circuite', 'Funcții logice avansate', 'Soluții eficiente cu număr minim de porți']
+    }
+];
+
+const RankDetailsModal = ({ currentRank, onClose }) => (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(2, 6, 23, 0.82)', zIndex: 100, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '25px' }}>
+        <section style={{ width: 'min(1050px, 100%)', maxHeight: '88vh', overflowY: 'auto', background: 'rgba(15, 23, 42, 0.98)', border: '1px solid #334155', borderRadius: '22px', padding: '28px', boxShadow: '0 0 45px rgba(15, 23, 42, 0.95)', position: 'relative' }}>
+            <button
+                onClick={onClose}
+                aria-label="Închide descrierea rolurilor"
+                style={{ position: 'absolute', top: '18px', right: '18px', width: '38px', height: '38px', borderRadius: '50%', border: '1px solid #475569', background: '#020617', color: '#e2e8f0', cursor: 'pointer', fontSize: '18px', fontWeight: 'bold' }}
+            >
+                ×
+            </button>
+
+            <div style={{ textAlign: 'center', marginBottom: '26px', paddingRight: '36px' }}>
+                <span style={{ color: '#38bdf8', fontSize: '13px', fontWeight: 'bold', letterSpacing: '2px', textTransform: 'uppercase' }}>Ghid de progres</span>
+                <h3 style={{ color: '#e2e8f0', margin: '8px 0 10px', fontSize: '1.8rem' }}>Rolurile din LogicGate Academy</h3>
+                <p style={{ color: '#94a3b8', margin: '0 auto', maxWidth: '760px', lineHeight: '1.6' }}>
+                    Fiecare rang arată nivelul de autonomie al jucătorului în repararea sistemelor logice. Pe măsură ce câștigi stele și XP, Spark îți oferă misiuni mai dificile și circuite mai complexe.
+                </p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: '16px' }}>
+                {RANK_DETAILS.map(rank => {
+                    const isCurrent = rank.title === currentRank || (currentRank === 'Începător' && rank.title === 'Începător');
+                    return (
+                        <article key={rank.title} style={{ background: isCurrent ? `${rank.color}18` : '#020617', border: `1px solid ${isCurrent ? rank.color : '#1e293b'}`, borderRadius: '16px', padding: '18px', boxShadow: isCurrent ? `0 0 22px ${rank.color}35` : 'none', position: 'relative' }}>
+                            {isCurrent && (
+                                <span style={{ position: 'absolute', top: '12px', right: '12px', color: rank.color, fontSize: '11px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>Rang curent</span>
+                            )}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                                <span style={{ color: rank.color, fontSize: '30px', filter: `drop-shadow(0 0 8px ${rank.color})` }}>{rank.icon}</span>
+                                <div>
+                                    <h4 style={{ color: rank.color, margin: 0, fontSize: '1.05rem' }}>{rank.title}</h4>
+                                    <span style={{ color: '#64748b', fontSize: '12px' }}>{rank.minXP}+ XP</span>
+                                </div>
+                            </div>
+                            <p style={{ color: '#cbd5e1', fontSize: '13px', lineHeight: '1.55', marginBottom: '12px' }}>{rank.description}</p>
+                            <p style={{ color: '#f8fafc', fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}>Misiune: {rank.mission}</p>
+                            <ul style={{ margin: 0, paddingLeft: '18px', color: '#94a3b8', fontSize: '12px', lineHeight: '1.6' }}>
+                                {rank.skills.map(skill => <li key={skill}>{skill}</li>)}
+                            </ul>
+                        </article>
+                    );
+                })}
+            </div>
+        </section>
+    </div>
+);
+
 const getTimeContext = () => {
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) return "Bună dimineața";
@@ -22,6 +118,7 @@ function App() {
     const [levels, setLevels] = useState([]);
     const [selectedLevel, setSelectedLevel] = useState(null);
     const [isHelpOpen, setIsHelpOpen] = useState(false);
+    const [isRanksOpen, setIsRanksOpen] = useState(false);
 
     const [progress, setProgress] = useState({
         unlockedLevel: 1,
@@ -222,6 +319,15 @@ function App() {
                         <span>💡</span> Teorie & Ajutor
                     </button>
 
+                    <button
+                        onClick={() => setIsRanksOpen(true)}
+                        style={{ background: '#0f172a', color: '#cbd5e1', border: '1px solid #475569', padding: '10px 15px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.2s' }}
+                        onMouseEnter={e => { e.target.style.background = '#334155'; e.target.style.color = '#fff'; }}
+                        onMouseLeave={e => { e.target.style.background = '#0f172a'; e.target.style.color = '#cbd5e1'; }}
+                    >
+                        <span style={{ color: badgeColor }}>🛡️</span> Explică rolurile
+                    </button>
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px', background: '#0f172a', padding: '8px 20px', borderRadius: '30px', border: `1px solid ${badgeColor}`, boxShadow: `inset 0 0 10px rgba(0,0,0,0.5), 0 0 15px ${badgeColor}40` }}>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: '1.2' }}>
                             <span style={{ color: badgeColor, fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>Rang: {badgeTitle}</span>
@@ -239,11 +345,13 @@ function App() {
             </header>
 
             {isHelpOpen && <TheoryGuide onClose={() => setIsHelpOpen(false)} />}
+            {isRanksOpen && <RankDetailsModal currentRank={badgeTitle} onClose={() => setIsRanksOpen(false)} />}
 
             <main style={{ flexGrow: 1, position: 'relative', overflowY: 'auto', overflowX: 'hidden', backgroundImage: 'radial-gradient(circle, #1e293b 2px, transparent 2px)', backgroundSize: '30px 30px' }}>
                 {!selectedLevel ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 40px 100px 40px', minHeight: '100%' }}>
-                        <h2 style={{ textAlign: 'center', color: '#e2e8f0', marginBottom: '80px', fontSize: '2.5rem', textTransform: 'uppercase', letterSpacing: '3px' }}>Harta Sistemului</h2>
+                        <h2 style={{ textAlign: 'center', color: '#e2e8f0', marginBottom: '35px', fontSize: '2.5rem', textTransform: 'uppercase', letterSpacing: '3px' }}>Harta Sistemului</h2>
+
 
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             {levelRows.map((row, rowIndex) => {
