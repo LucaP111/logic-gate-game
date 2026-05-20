@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import GameBoard from './components/GameBoard';
 import TheoryGuide from './components/TheoryGuide';
+import { DEFAULT_LOCATION_CONTEXT, getLocationContextFromBrowser } from './locationContext';
 
 const chunkArray = (arr, size) => {
     const chunked = [];
@@ -22,6 +23,7 @@ function App() {
     const [levels, setLevels] = useState([]);
     const [selectedLevel, setSelectedLevel] = useState(null);
     const [isHelpOpen, setIsHelpOpen] = useState(false);
+    const [localContext, setLocalContext] = useState(DEFAULT_LOCATION_CONTEXT);
 
     const [progress, setProgress] = useState({
         unlockedLevel: 1,
@@ -36,6 +38,9 @@ function App() {
     const [bulbGlow, setBulbGlow] = useState(false);
 
     const timeGreeting = getTimeContext();
+    const onboardingMissionText = localContext.status === 'matched'
+        ? `Eu sunt Spark, sistemul bazei. Am detectat că ești în zona ${localContext.city}. ${localContext.introMission} Știi cum funcționează porțile logice ca să mă ajuți să intervenim acum, sau vrei să o luăm de la zero cu un tutorial?`
+        : "Eu sunt Spark, sistemul bazei. Avem o mică pană de curent. Știi cum funcționează porțile logice ca să mă ajuți să le reconectăm acum, sau vrei să o luăm de la zero cu un tutorial?";
 
     useEffect(() => {
         const savedProgress = localStorage.getItem('logicGateProgressData');
@@ -45,6 +50,16 @@ function App() {
             .then(res => res.json())
             .then(data => setLevels(data))
             .catch(err => console.error("API Offline", err));
+
+        let isMounted = true;
+
+        getLocationContextFromBrowser().then((context) => {
+            if (isMounted) setLocalContext(context);
+        });
+
+        return () => {
+            isMounted = false;
+        };
     }, []);
 
     const loadLevel = (level) => {
@@ -133,7 +148,7 @@ function App() {
                         <div>
                             <h2 style={{ color: '#60a5fa', marginBottom: '15px', fontSize: '24px' }}>{timeGreeting}, inginerule!</h2>
                             <p style={{ color: '#cbd5e1', fontSize: '16px', marginBottom: '35px', lineHeight: '1.6' }}>
-                                Eu sunt Spark, sistemul bazei. Avem o mică pană de curent. Știi cum funcționează porțile logice ca să mă ajuți să le reconectăm acum, sau vrei să o luăm de la zero cu un tutorial?
+                                {onboardingMissionText}
                             </p>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                 <button
@@ -209,7 +224,10 @@ function App() {
             <header style={{ padding: '15px 30px', background: '#1e293b', borderBottom: '2px solid #3b82f6', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <h1 style={{ margin: 0, color: '#60a5fa', textShadow: '0 0 10px rgba(96, 165, 250, 0.5)' }}>⚡ LogicGate Academy</h1>
-                    <span style={{ color: '#94a3b8', fontSize: '12px' }}>{timeGreeting} | Jucător: {progress.profile}</span>
+                    <span style={{ color: '#94a3b8', fontSize: '12px' }}>
+                    {timeGreeting} | Jucător: {progress.profile}
+                        {localContext.city ? ` | Oraș: ${localContext.city}` : ''}
+                    </span>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -298,7 +316,11 @@ function App() {
                         </div>
                     </div>
                 ) : (
-                    <GameBoard levelData={selectedLevel} onComplete={handleLevelComplete} />
+                    <GameBoard
+                        levelData={selectedLevel}
+                        onComplete={handleLevelComplete}
+                        localContext={localContext}
+                    />
                 )}
             </main>
         </div>

@@ -8,10 +8,25 @@ import BulbNode from './Nodes/BulbNode';
 import Avatar from './Avatar';
 import { evaluateCircuit } from '../rules/RuleEngine';
 import { playSound } from '../audio';
+import { getGateStyle } from '../gateStyles';
 
 const nodeTypes = { switch: SwitchNode, gate: GateNode, bulb: BulbNode };
 
-const GameBoardContent = ({ levelData, onComplete }) => {
+const getLocalizedMissionMessage = (baseMessage, localContext, levelId) => {
+    if (!localContext || localContext.status !== 'matched') {
+        return baseMessage;
+    }
+
+    const shouldShowLocalReminder = levelId === 1 || levelId % 4 === 0;
+
+    if (!shouldShowLocalReminder) {
+        return baseMessage;
+    }
+
+    return `${baseMessage} Nu uita, ${localContext.landmark} din ${localContext.city} ${localContext.needsVerb} nevoie de ajutorul tău!`;
+};
+
+const GameBoardContent = ({ levelData, onComplete, localContext }) => {
     const [nodes, setNodes] = useState([]);
     const [edges, setEdges] = useState([]);
     const [hasWon, setHasWon] = useState(false);
@@ -24,6 +39,8 @@ const GameBoardContent = ({ levelData, onComplete }) => {
     const [earnedStars, setEarnedStars] = useState(0);
 
     const reactFlowWrapper = useRef(null);
+    const warningTimeoutRef = useRef(null);
+    const lastWarningAtRef = useRef(0);
     const { screenToFlowPosition } = useReactFlow();
 
     useEffect(() => {
@@ -74,9 +91,25 @@ const GameBoardContent = ({ levelData, onComplete }) => {
     }, [nodes, levelData]);
 
     const showWarning = (msg) => {
+        const now = Date.now();
+
+        if (now - lastWarningAtRef.current < 700) {
+            return;
+        }
+
+        lastWarningAtRef.current = now;
+
         playSound.error();
         setWarningMessage(msg);
-        setTimeout(() => setWarningMessage(null), 4000); };
+
+        if (warningTimeoutRef.current) {
+            clearTimeout(warningTimeoutRef.current);
+        }
+
+        warningTimeoutRef.current = setTimeout(() => {
+            setWarningMessage(null);
+        }, 4000);
+    };
 
     const handleTogglePower = () => {
         playSound.switch();
@@ -162,7 +195,7 @@ const GameBoardContent = ({ levelData, onComplete }) => {
     // --- LOGICA DE STARE A AVATARULUI ) ---
     const isBulbOn = nodes.find(n => n.type === 'bulb')?.data?.value === true;
     let currentMood = 'neutral';
-    let currentMsg = levelData.description;
+    let currentMsg = getLocalizedMissionMessage(levelData.description, localContext, levelData.id);
 
     if (showWinModal) {
         currentMood = 'happy';
@@ -213,11 +246,39 @@ const GameBoardContent = ({ levelData, onComplete }) => {
             {isToolboxVisible && (
                 <div style={{ width: '150px', background: '#0f172a', borderRight: '2px solid #334155', padding: '20px', paddingTop: '160px', display: 'flex', flexDirection: 'column', gap: '15px' }}>
                     <h4 style={{ color: '#94a3b8', margin: '0 0 10px 0', textAlign: 'center' }}>INVENTAR</h4>
-                    {levelData.availableGates.map((gateType) => (
-                        <div key={gateType} onDragStart={(event) => onDragStart(event, gateType)} draggable style={{ padding: '15px', background: '#1e293b', border: '2px dashed #3b82f6', color: '#60a5fa', textAlign: 'center', borderRadius: '8px', cursor: 'grab', fontWeight: 'bold' }}>
-                            {gateType}
-                        </div>
-                    ))}
+                    {levelData.availableGates.map((gateType) => {
+                        const { color } = getGateStyle(gateType);
+
+                        return (
+                            <div
+                                key={gateType}
+                                onDragStart={(event) => onDragStart(event, gateType)}
+                                draggable
+                                style={{
+                                    padding: '15px',
+                                    background: '#1e293b',
+                                    border: `2px dashed ${color}`,
+                                    color,
+                                    textAlign: 'center',
+                                    borderRadius: '8px',
+                                    cursor: 'grab',
+                                    fontWeight: 'bold',
+                                    boxShadow: `0 0 12px ${color}22`,
+                                    transition: 'transform 0.15s ease, box-shadow 0.15s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-2px)';
+                                    e.currentTarget.style.boxShadow = `0 0 18px ${color}55`;
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = `0 0 12px ${color}22`;
+                                }}
+                            >
+                                {gateType}
+                            </div>
+                        );
+                    })}
                 </div>
             )}
 
