@@ -1,6 +1,9 @@
 // Partea audio: sunete pentru gresit / corect + altele daca e
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+let lastErrorSoundAt = 0;
+const ERROR_SOUND_COOLDOWN_MS = 700;
+
 function playTone(freq, type, duration, vol = 0.1) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
 
@@ -11,7 +14,7 @@ function playTone(freq, type, duration, vol = 0.1) {
     oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
     gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
 
     oscillator.connect(gainNode);
     gainNode.connect(audioCtx.destination);
@@ -21,17 +24,25 @@ function playTone(freq, type, duration, vol = 0.1) {
 }
 
 export const playSound = {
-    switch: () => playTone(600, 'square', 0.1, 0.05),
+    switch: () => playTone(600, 'square', 0.08, 0.055),
 
     error: () => {
-        playTone(150, 'sawtooth', 0.3, 0.1);
-        setTimeout(() => playTone(100, 'sawtooth', 0.4, 0.1), 100);
+        const now = Date.now();
+
+        if (now - lastErrorSoundAt < ERROR_SOUND_COOLDOWN_MS) {
+            return;
+        }
+
+        lastErrorSoundAt = now;
+
+        playTone(150, 'sawtooth', 0.18, 0.16);
+        setTimeout(() => playTone(100, 'sawtooth', 0.22, 0.12), 90);
     },
 
     win: () => {
-        playTone(400, 'sine', 0.1, 0.1);
-        setTimeout(() => playTone(500, 'sine', 0.1, 0.1), 100);
-        setTimeout(() => playTone(600, 'sine', 0.1, 0.1), 200);
-        setTimeout(() => playTone(800, 'sine', 0.4, 0.1), 300);
+        playTone(400, 'sine', 0.1, 0.15);
+        setTimeout(() => playTone(500, 'sine', 0.1, 0.15), 100);
+        setTimeout(() => playTone(600, 'sine', 0.1, 0.15), 200);
+        setTimeout(() => playTone(800, 'sine', 0.4, 0.15), 300);
     }
 };
